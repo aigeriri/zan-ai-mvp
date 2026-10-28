@@ -160,10 +160,79 @@ dialog::backdrop{background:rgba(8,14,32,.55)}
 @keyframes sp{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.spin{animation-duration:3s}}
 .toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ok);color:#fff;border-radius:8px;padding:10px 16px;font-size:14px;font-weight:600;z-index:20;max-width:calc(100vw - 32px)}
+/* auth */
+.auth{position:fixed;inset:0;z-index:30;background:var(--bg);overflow:auto;display:grid;grid-template-columns:1fr 1fr}
+@media (max-width:820px){.auth{grid-template-columns:1fr}}
+.auth-side{background:var(--navy);color:var(--navy-ink);padding:max(40px,env(safe-area-inset-top,0px)) 48px 40px;display:flex;flex-direction:column;gap:28px;justify-content:center}
+@media (max-width:820px){.auth-side{padding:max(24px,env(safe-area-inset-top,0px)) 20px 24px;gap:16px}.auth-side .bens{display:none}}
+.auth-side .brand{font-size:24px}
+.auth-side h1{font-size:clamp(26px,3.4vw,38px);line-height:1.2}
+.auth-side h1 em{font-style:normal;color:var(--gold)}
+.auth-side p{margin:0;color:#c9d3ea}
+.bens{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.bens li{display:flex;gap:12px;align-items:center}
+.bens li span{width:30px;height:30px;border-radius:8px;background:rgba(200,150,58,.18);color:var(--gold);display:grid;place-items:center;font-weight:700;flex:none}
+.auth-main{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 16px calc(32px + env(safe-area-inset-bottom,0px));gap:16px}
+.auth-main .lang{border-color:var(--line)}
+.auth-main .lang button{color:var(--ink)}
+.auth-card{width:min(420px,100%);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:14px}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--bg);border-radius:9px;padding:4px}
+.seg button{border:0;background:none;border-radius:7px;padding:9px;font-weight:600;cursor:pointer;color:var(--muted)}
+.seg button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.roles{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.roles label{flex-direction:row;justify-content:center;text-align:center;border:1px solid var(--line);border-radius:8px;padding:8px 4px;font-size:12.5px;cursor:pointer;color:var(--ink)}
+.roles input{position:absolute;opacity:0;pointer-events:none}
+.roles label:has(input:checked){border-color:var(--gold);background:var(--gold-soft)}
+.agree{flex-direction:row;align-items:flex-start;gap:8px;font-weight:400;font-size:12.5px}
+.agree input{width:auto;margin-top:3px;accent-color:var(--gold)}
+.pw{position:relative}.pw input{padding-right:44px}
+.pw button{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:0;cursor:pointer;color:var(--muted);font-size:12px;padding:4px}
+.switch{font-size:13px;color:var(--muted);text-align:center}
+.switch button{background:none;border:0;color:var(--gold);font-weight:700;cursor:pointer;padding:0}
+.user{display:flex;align-items:center;gap:8px;font-size:13px}
+.ava{width:28px;height:28px;border-radius:50%;background:var(--gold);color:#16120a;display:grid;place-items:center;font-weight:700;font-size:13px}
+.out{background:none;border:1px solid rgba(233,237,247,.3);border-radius:6px;color:var(--navy-ink);font-size:12px;padding:4px 8px;cursor:pointer}
+@media (max-width:620px){.user .uname{display:none}}
 footer{padding-block:24px 40px;font-size:12px;color:var(--muted);border-top:1px solid var(--line)}
 </style>
 </head>
 <body>
+<div class="auth" id="auth" hidden>
+  <aside class="auth-side">
+    <div class="brand"><svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4v22M9 27h14M6 9h20"/><path d="M6 9l-4 9a4 4 0 0 0 8 0zM26 9l-4 9a4 4 0 0 0 8 0z"/></svg>Zan AI</div>
+    <h1 data-i="a_h"></h1>
+    <p data-i="a_sub"></p>
+    <ul class="bens"><li><span>§</span><b data-i="b1"></b></li><li><span>✓</span><b data-i="b2"></b></li><li><span>✎</span><b data-i="b3"></b></li></ul>
+  </aside>
+  <div class="auth-main">
+    <div class="lang" role="group" aria-label="Language"><button data-lang="kk">ҚАЗ</button><button data-lang="ru">РУС</button><button data-lang="en">ENG</button></div>
+    <div class="auth-card">
+      <div class="seg" role="tablist"><button type="button" data-am="reg" data-i="a_reg"></button><button type="button" data-am="login" data-i="a_login"></button></div>
+      <form id="regForm" novalidate style="display:flex;flex-direction:column;gap:12px">
+        <label><span data-i="f_name"></span><input id="rName" autocomplete="name"></label>
+        <label><span data-i="f_email"></span><input id="rEmail" type="email" autocomplete="email" placeholder="you@mail.kz"></label>
+        <label><span data-i="f_pass"></span><span class="pw"><input id="rPass" type="password" autocomplete="new-password"><button type="button" data-eye data-i="show"></button></span></label>
+        <label><span data-i="f_pass2"></span><input id="rPass2" type="password" autocomplete="new-password"></label>
+        <div><div style="font-size:13px;font-weight:600;color:var(--muted);margin-bottom:5px" data-i="f_role"></div>
+          <div class="roles"><label><input type="radio" name="role" value="biz" checked><span data-i="r_biz"></span></label><label><input type="radio" name="role" value="lawyer"><span data-i="r_lawyer"></span></label><label><input type="radio" name="role" value="citizen"><span data-i="r_citizen"></span></label></div></div>
+        <label class="agree"><input type="checkbox" id="rAgree"><span data-i="f_agree"></span></label>
+        <div class="err" id="regErr" role="alert"></div>
+        <button class="btn btn-gold" type="submit" data-i="a_reg_btn"></button>
+        <p class="note" style="margin:0;text-align:center" data-i="a_free"></p>
+        <div class="switch"><span data-i="a_have"></span> <button type="button" data-am="login" data-i="a_login"></button></div>
+      </form>
+      <form id="loginForm" novalidate hidden style="display:flex;flex-direction:column;gap:12px">
+        <label><span data-i="f_email"></span><input id="lEmail" type="email" autocomplete="email" placeholder="you@mail.kz"></label>
+        <label><span data-i="f_pass"></span><span class="pw"><input id="lPass" type="password" autocomplete="current-password"><button type="button" data-eye data-i="show"></button></span></label>
+        <div class="err" id="loginErr" role="alert"></div>
+        <button class="btn btn-gold" type="submit" data-i="a_login_btn"></button>
+        <div class="switch"><span data-i="a_no"></span> <button type="button" data-am="reg" data-i="a_to_reg"></button></div>
+      </form>
+    </div>
+    <p class="note" style="margin:0;max-width:420px;text-align:center" data-i="a_note"></p>
+  </div>
+</div>
+
 <header class="top">
   <div class="wrap">
     <div class="brand">
@@ -178,6 +247,7 @@ footer{padding-block:24px 40px;font-size:12px;color:var(--muted);border-top:1px 
         <span class="pname" id="planName">Free</span><span class="lbl" id="quotaTxt"></span>
         <span class="meter" id="meter"><i id="quotaBar" style="width:100%"></i></span>
       </button>
+      <div class="user"><span class="ava" id="ava">?</span><span class="uname" id="uname"></span><button class="out" id="logout" type="button" data-i="logout"></button></div>
     </div>
   </div>
 </header>
@@ -335,7 +405,44 @@ ru:{
   co_next:"Следующее списание", co_paid:"Оплачено", co_via:"Способ", co_start:"Начать пользоваться",
   toast:"Тариф {p} активен",
   e_rate:"Слишком много запросов. Подождите немного и попробуйте снова.", e_json:"Не удалось разобрать ответ. Нажмите ещё раз.", e_net:"Связь прервалась. Попробуйте ещё раз.", e_stop:"Остановлено.",
-  lang_name:"русский"
+  lang_name:"русский",
+  a_h:"Законы Казахстана — <em>понятным языком</em>",
+  a_sub:"Юридический AI-ассистент для предпринимателей, юристов и граждан.",
+  b1:"Ответы со ссылками на законы РК",
+  b2:"Проверка договоров на риски",
+  b3:"Черновики документов за минуты",
+  a_reg:"Регистрация",
+  a_login:"Вход",
+  f_name:"Имя",
+  f_email:"Email",
+  f_pass:"Пароль",
+  f_pass2:"Повторите пароль",
+  f_role:"Кто вы?",
+  r_biz:"Предприниматель",
+  r_lawyer:"Юрист",
+  r_citizen:"Гражданин / студент",
+  f_agree:"Я согласен(на) с условиями использования и обработкой персональных данных",
+  a_reg_btn:"Создать аккаунт",
+  a_login_btn:"Войти",
+  a_have:"Уже есть аккаунт?",
+  a_no:"Нет аккаунта?",
+  a_to_reg:"Зарегистрироваться",
+  a_free:"После регистрации — тариф Free: 10 запросов в день",
+  a_note:"Демо-версия MVP: аккаунт сохраняется только в этом браузере.",
+  show:"Показать",
+  hide:"Скрыть",
+  logout:"Выйти",
+  welcome:"Добро пожаловать, {n}!",
+  hi:"С возвращением, {n}!",
+  e_name:"Введите имя.",
+  e_email:"Введите корректный email.",
+  e_pass:"Пароль — минимум 6 символов.",
+  e_pass2:"Пароли не совпадают.",
+  e_agree:"Нужно согласие с условиями.",
+  e_exists:"Аккаунт с таким email уже есть — войдите.",
+  e_nouser:"Аккаунт не найден — зарегистрируйтесь.",
+  e_wrong:"Неверный пароль.",
+  e_empty:"Введите email и пароль."
 },
 kk:{
   tab_ask:"Заң бойынша сұрақ", tab_check:"Шартты тексеру", tab_docs:"Құжаттар", tab_plans:"Тарифтер",
@@ -379,7 +486,44 @@ kk:{
   co_next:"Келесі төлем", co_paid:"Төленді", co_via:"Әдіс", co_start:"Пайдалануды бастау",
   toast:"{p} тарифі белсенді",
   e_rate:"Сұраулар тым көп. Біраз күтіп, қайта көріңіз.", e_json:"Жауапты талдау мүмкін болмады. Қайта басыңыз.", e_net:"Байланыс үзілді. Қайта көріңіз.", e_stop:"Тоқтатылды.",
-  lang_name:"қазақ тілі"
+  lang_name:"қазақ тілі",
+  a_h:"Қазақстан заңдары — <em>түсінікті тілмен</em>",
+  a_sub:"Кәсіпкерлерге, заңгерлерге және азаматтарға арналған заңгерлік AI-көмекші.",
+  b1:"ҚР заңдарына сілтемесі бар жауаптар",
+  b2:"Шарттарды тәуекелге тексеру",
+  b3:"Құжат жобалары бірнеше минутта",
+  a_reg:"Тіркелу",
+  a_login:"Кіру",
+  f_name:"Аты",
+  f_email:"Email",
+  f_pass:"Құпиясөз",
+  f_pass2:"Құпиясөзді қайталаңыз",
+  f_role:"Сіз кімсіз?",
+  r_biz:"Кәсіпкер",
+  r_lawyer:"Заңгер",
+  r_citizen:"Азамат / студент",
+  f_agree:"Пайдалану шарттарымен және дербес деректерді өңдеумен келісемін",
+  a_reg_btn:"Аккаунт құру",
+  a_login_btn:"Кіру",
+  a_have:"Аккаунтыңыз бар ма?",
+  a_no:"Аккаунтыңыз жоқ па?",
+  a_to_reg:"Тіркелу",
+  a_free:"Тіркелгеннен кейін — Free тарифі: күніне 10 сұрау",
+  a_note:"MVP демо-нұсқасы: аккаунт тек осы браузерде сақталады.",
+  show:"Көрсету",
+  hide:"Жасыру",
+  logout:"Шығу",
+  welcome:"Қош келдіңіз, {n}!",
+  hi:"Қайта оралуыңызбен, {n}!",
+  e_name:"Атыңызды енгізіңіз.",
+  e_email:"Дұрыс email енгізіңіз.",
+  e_pass:"Құпиясөз — кемінде 6 таңба.",
+  e_pass2:"Құпиясөздер сәйкес келмейді.",
+  e_agree:"Шарттармен келісу қажет.",
+  e_exists:"Бұл email-мен аккаунт бар — кіріңіз.",
+  e_nouser:"Аккаунт табылмады — тіркеліңіз.",
+  e_wrong:"Құпиясөз қате.",
+  e_empty:"Email мен құпиясөзді енгізіңіз."
 },
 en:{
   tab_ask:"Legal question", tab_check:"Contract check", tab_docs:"Documents", tab_plans:"Pricing",
@@ -423,7 +567,44 @@ en:{
   co_next:"Next payment", co_paid:"Paid", co_via:"Method", co_start:"Start using Zan AI",
   toast:"{p} plan is active",
   e_rate:"Too many requests. Please wait a moment and try again.", e_json:"Couldn't read the answer. Please try again.", e_net:"Connection lost. Please try again.", e_stop:"Stopped.",
-  lang_name:"English"
+  lang_name:"English",
+  a_h:"Kazakhstan law in <em>plain language</em>",
+  a_sub:"A legal AI assistant for entrepreneurs, lawyers and citizens.",
+  b1:"Answers with references to KZ law",
+  b2:"Contract risk checks",
+  b3:"Document drafts in minutes",
+  a_reg:"Sign up",
+  a_login:"Log in",
+  f_name:"Name",
+  f_email:"Email",
+  f_pass:"Password",
+  f_pass2:"Repeat password",
+  f_role:"Who are you?",
+  r_biz:"Entrepreneur",
+  r_lawyer:"Lawyer",
+  r_citizen:"Citizen / student",
+  f_agree:"I agree to the terms of use and the processing of personal data",
+  a_reg_btn:"Create account",
+  a_login_btn:"Log in",
+  a_have:"Already have an account?",
+  a_no:"No account yet?",
+  a_to_reg:"Sign up",
+  a_free:"After signing up you get the Free plan: 10 requests per day",
+  a_note:"MVP demo: your account is stored only in this browser.",
+  show:"Show",
+  hide:"Hide",
+  logout:"Log out",
+  welcome:"Welcome, {n}!",
+  hi:"Welcome back, {n}!",
+  e_name:"Enter your name.",
+  e_email:"Enter a valid email.",
+  e_pass:"Password must be at least 6 characters.",
+  e_pass2:"Passwords don't match.",
+  e_agree:"Please accept the terms.",
+  e_exists:"An account with this email already exists — log in.",
+  e_nouser:"Account not found — sign up.",
+  e_wrong:"Wrong password.",
+  e_empty:"Enter your email and password."
 }};
 
 let lang = store.get("zan-lang", null) || ((navigator.language||"").startsWith("kk") ? "kk" : (navigator.language||"").startsWith("en") ? "en" : "ru");
@@ -436,8 +617,10 @@ const PRICES = { biz:{month:4990, year:47900, name:"Бизнес"}, pro:{month:1
 const planLabel = p => p==="biz" ? (lang==="en" ? "Business" : "«Бизнес»") : p==="pro" ? "Pro" : "Free";
 const fmt = n => n.toLocaleString("ru-RU").replace(/,/g," ") + " ₸";
 const today = () => { const d = new Date(); return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(); };
-let sub = store.get("zan-plan", {plan:"free"});
-let quota = store.get("zan-quota-day", {d:today(), used:0}); if (quota.d !== today()) quota = {d:today(), used:0};
+let user = null;
+const K = k => k + ":" + (user ? user.email : "guest");
+let sub = {plan:"free"}, quota = {d:today(), used:0};
+function loadUserData(){ sub = store.get(K("zan-plan"), {plan:"free"}); quota = store.get(K("zan-quota-day"), {d:today(), used:0}); if (quota.d !== today()) quota = {d:today(), used:0}; }
 const paid = () => sub.plan === "biz" || sub.plan === "pro";
 const canUse = () => paid() || quota.used < LIMIT;
 function renderQuota(){
@@ -449,7 +632,7 @@ function renderQuota(){
     $("#quotaBar").style.width = (left/LIMIT*100) + "%";
   }
 }
-function spend(){ if (paid()) return; if (quota.d !== today()) quota = {d:today(), used:0}; quota.used++; store.set("zan-quota-day", quota); renderQuota(); }
+function spend(){ if (paid()) return; if (quota.d !== today()) quota = {d:today(), used:0}; quota.used++; store.set(K("zan-quota-day"), quota); renderQuota(); }
 const limitHTML = () => `<div class="limit">${md(t("limit_t"))}<button class="btn btn-gold" type="button" data-goplans>${esc(t("limit_btn"))}</button></div>`;
 document.addEventListener("click", e => { if (e.target.closest("[data-goplans]")) openTab("plans"); });
 $("#planBtn").onclick = () => openTab("plans");
@@ -875,7 +1058,7 @@ function renderPlans(){
   $("#faq").innerHTML = t("faq").map(([a,b]) => `<div><b>${esc(a)}</b>${esc(b)}</div>`).join("");
   $("#resetPlan").hidden = !paid();
 }
-$("#resetPlan").onclick = () => { sub = {plan:"free"}; store.set("zan-plan", sub); renderQuota(); renderPlans(); };
+$("#resetPlan").onclick = () => { sub = {plan:"free"}; store.set(K("zan-plan"), sub); renderQuota(); renderPlans(); };
 
 /* checkout */
 const dlg = $("#checkout"), dlgBody = $("#dlgBody");
@@ -913,7 +1096,7 @@ function renderCo(){
       co.step = "proc"; renderCo();
       setTimeout(() => {
         sub = {plan:co.plan, period:co.period, method:co.method, since:Date.now(), next:nextDate(), amount};
-        store.set("zan-plan", sub); co.step = "ok"; renderCo(); renderQuota(); renderPlans();
+        store.set(K("zan-plan"), sub); co.step = "ok"; renderCo(); renderQuota(); renderPlans();
       }, 2200);
     };
   } else if (co.step==="proc"){
@@ -938,7 +1121,7 @@ function toast(msg){ const d = document.createElement("div"); d.className = "toa
 function applyLang(){
   document.documentElement.lang = lang;
   $$("[data-lang]").forEach(b => b.setAttribute("aria-pressed", b.dataset.lang===lang));
-  $$("[data-i]").forEach(el => el.textContent = t(el.dataset.i));
+  $$("[data-i]").forEach(el => { if (el.dataset.i === "a_h") el.innerHTML = t("a_h"); else el.textContent = t(el.dataset.i); });
   $$("[data-ph]").forEach(el => { el.placeholder = t(el.dataset.ph); el.setAttribute("aria-label", t(el.dataset.ph)); });
   renderChips(); renderDocTypes(); renderQuota(); renderPlans();
   if (!lastCheck) checkEmpty(); else if (lastCheck === "demo") renderCheck(DEMO_CHECK[lang]);
@@ -947,7 +1130,63 @@ function applyLang(){
   if (co && dlg.open) renderCo();
 }
 $$("[data-lang]").forEach(b => b.onclick = () => { lang = b.dataset.lang; store.set("zan-lang", lang); applyLang(); });
+
+/* ================= AUTH (демо: аккаунты хранятся в браузере) ================= */
+const authEl = $("#auth");
+async function hashPw(email, pw){
+  const str = "zan:" + email + ":" + pw;
+  try{ const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str)); return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,"0")).join(""); }
+  catch(e){ let h = 5381; for (const c of str) h = ((h << 5) + h + c.charCodeAt(0)) | 0; return "d" + (h >>> 0).toString(16); }
+}
+function setAuthMode(m){
+  $$("[data-am]").forEach(b => { if (b.closest(".seg")) b.setAttribute("aria-selected", b.dataset.am === m); });
+  $("#regForm").hidden = m !== "reg"; $("#loginForm").hidden = m !== "login";
+  $("#regErr").textContent = ""; $("#loginErr").textContent = "";
+  (m === "reg" ? $("#rName") : $("#lEmail")).focus();
+}
+$$("[data-am]").forEach(b => b.onclick = () => setAuthMode(b.dataset.am));
+$$("[data-eye]").forEach(b => b.onclick = () => { const i = b.previousElementSibling; const show = i.type === "password"; i.type = show ? "text" : "password"; b.textContent = t(show ? "hide" : "show"); });
+function enter(u, isNew){
+  user = u; store.set("zan-session", u.email);
+  loadUserData(); authEl.hidden = true;
+  $("#ava").textContent = (u.name.trim()[0] || "?").toUpperCase(); $("#uname").textContent = u.name;
+  renderQuota(); renderPlans(); window.scrollTo({top:0});
+  toast(t(isNew ? "welcome" : "hi", {n:u.name}));
+}
+$("#regForm").onsubmit = async e => {
+  e.preventDefault(); const err = $("#regErr"); err.textContent = "";
+  const name = $("#rName").value.trim(), email = $("#rEmail").value.trim().toLowerCase(), pw = $("#rPass").value, pw2 = $("#rPass2").value;
+  const role = (document.querySelector("input[name=role]:checked") || {}).value || "biz";
+  if (!name) return err.textContent = t("e_name");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return err.textContent = t("e_email");
+  if (pw.length < 6) return err.textContent = t("e_pass");
+  if (pw !== pw2) return err.textContent = t("e_pass2");
+  if (!$("#rAgree").checked) return err.textContent = t("e_agree");
+  const users = store.get("zan-users", {});
+  if (users[email]){ err.textContent = t("e_exists"); $("#lEmail").value = email; return; }
+  users[email] = { name, email, role, hash: await hashPw(email, pw), created: Date.now() };
+  store.set("zan-users", users);
+  $("#regForm").reset();
+  enter(users[email], true);
+};
+$("#loginForm").onsubmit = async e => {
+  e.preventDefault(); const err = $("#loginErr"); err.textContent = "";
+  const email = $("#lEmail").value.trim().toLowerCase(), pw = $("#lPass").value;
+  if (!email || !pw) return err.textContent = t("e_empty");
+  const u = store.get("zan-users", {})[email];
+  if (!u) return err.textContent = t("e_nouser");
+  if (u.hash !== await hashPw(email, pw)) return err.textContent = t("e_wrong");
+  $("#loginForm").reset();
+  enter(u, false);
+};
+$("#logout").onclick = () => { try{ localStorage.removeItem("zan-session"); }catch(e){} location.reload(); };
+
 applyLang();
+(() => {
+  const email = store.get("zan-session", null), u = email && store.get("zan-users", {})[email];
+  if (u){ user = u; loadUserData(); $("#ava").textContent = (u.name.trim()[0] || "?").toUpperCase(); $("#uname").textContent = u.name; renderQuota(); renderPlans(); }
+  else { authEl.hidden = false; setAuthMode(store.get("zan-users", null) ? "login" : "reg"); }
+})();
 })();
 </script>
 </body>
